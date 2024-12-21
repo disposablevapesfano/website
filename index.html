@@ -11,13 +11,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Body Styling */
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #212529;
+            background-color: #f0f0f0;
+            color: #333333;
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -64,6 +64,7 @@
             width: 300px;
             text-align: center;
             transition: box-shadow 0.3s ease;
+            user-select: none;
         }
 
         .product-card:hover {
@@ -75,6 +76,11 @@
             height: 356px;
             object-fit: cover;
             border-bottom: 1px solid #e9ecef;
+            pointer-events: none;
+        }
+
+        .product-card h3, .product-card p {
+            pointer-events: none;
         }
 
         .product-card h3 {
@@ -135,18 +141,38 @@
         }
 
         .modal-content {
-            background: #ffffff;
+            overflow-y: scroll;
+            scrollbar-width: thin;
+            background: #e0e0e0;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 90%;
-            max-width: 500px;
+            max-width: 1000px; /* Double the size */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            position: fixed;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 8px;              /* Width of the scrollbar */
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background-color: #ccc;  /* Thumb color */
+            border-radius: 4px;
         }
 
         .modal-content h2 {
             font-size: 1.8rem;
             margin-bottom: 20px;
             color: #2c3e50;
+            width: 100%;
+        }
+
+        .modal-content .form-section, .modal-content .product-details {
+            flex: 1;
+            padding: 10px;
         }
 
         .modal-content label {
@@ -179,6 +205,31 @@
 
         .modal-content button:hover {
             background: #0056b3;
+        }
+
+        .close-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .close-button:hover {
+            background-color: #e53935;
+        }
+
+        /* Product Image in Checkout Modal */
+        .product-details img {
+            width: 357px;
+            height: 357px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         /* Confirmation Modal */
@@ -223,7 +274,7 @@
         .confirmation-content button {
             padding: 10px 20px;
             background: #007bff;
-            color: #ffffff;
+            color: #e0e0e0;
             font-size: 1rem;
             border: none;
             border-radius: 4px;
@@ -233,6 +284,62 @@
 
         .confirmation-content button:hover {
             background: #0056b3;
+        }
+
+        .checkout-form {
+            max-height: 600px; /* Adjust the height as needed */
+            overflow-y: scroll; /* Add scroll if content overflows */
+            width: 80%; /* Adjust the width as needed */
+            scrollbar-width: thin;
+        }
+
+        .checkout-form input,
+        .checkout-form textarea {
+            margin-bottom: 10px; /* Add some space between form elements */
+        }
+
+        .checkout-form::-webkit-scrollbar {
+            width: 8px;              /* Width of the scrollbar */
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background-color: #ccc;  /* Thumb color */
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                flex-direction: column;
+                max-width: 90%;
+            }
+
+            .product-details img {
+                width: 100%;
+                height: auto;
+            }
+
+            .checkout-form {
+                width: 100%; /* Make the form full width on smaller screens */
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                flex-direction: column;
+                max-width: 90%;
+            }
+
+            .product-details img {
+                width: 100%;
+                height: auto;
+            }
+
+            #checkout-form {
+                width: 100%; /* Make the form full width on smaller screens */
+                padding-left: 10px; /* Adjust left padding for smaller screens */
+            }
         }
 
     </style>
@@ -245,63 +352,63 @@
 
     <section class="products">
         <!-- Product Cards Here -->
-        <div class="product-card" data-id="1" data-product="Pineapple Express" data-price="€24.99">
+        <div class="product-card" data-id="1" data-product="Pineapple Express" data-price="€24.99" data-description="70% CBD - Tropical twist with relaxation." data-image="img/PineappleExpress.png">
             <img src="img/PineappleExpress.png" alt="Pineapple Express">
             <h3>Pineapple Express</h3>
             <p>70% CBD - Tropical twist with relaxation.</p>
             <p>Price: €24.99</p>
             <button onclick="openCheckout(1)">Purchase</button>
         </div>
-        <div class="product-card" data-id="2" data-product="Atomic Lemon" data-price="€24.99">
+        <div class="product-card" data-id="2" data-product="Atomic Lemon" data-price="€24.99" data-description="70% CBD - Zesty and refreshing." data-image="img/AtomicLemon.png">
             <img src="img/AtomicLemon.png" alt="Atomic Lemon">
             <h3>Atomic Lemon</h3>
             <p>70% CBD - Zesty and refreshing.</p>
             <p>Price: €24.99</p>
             <button onclick="openCheckout(2)">Purchase</button>
         </div>
-        <div class="product-card" data-id="3" data-product="Banana Smoothie" data-price="€24.99">
+        <div class="product-card" data-id="3" data-product="Banana Smoothie" data-price="€24.99" data-description="70% CBD - Smooth and creamy relaxation." data-image="img/BananaSmoothie.png">
             <img src="img/BananaSmoothie.png" alt="Banana Smoothie">
             <h3>Banana Smoothie</h3>
             <p>70% CBD - Smooth and creamy relaxation.</p>
             <p>Price: €24.99</p>
             <button onclick="openCheckout(3)">Purchase</button>
         </div>
-        <div class="product-card" data-id="4" data-product="Bubble Gum" data-price="€24.99">
+        <div class="product-card" data-id="4" data-product="Bubble Gum" data-price="€24.99" data-description="70% CBD - Sweet and soothing." data-image="img/BubbleGum.png">
             <img src="img/BubbleGum.png" alt="Bubble Gum">
             <h3>Bubble Gum</h3>
             <p>70% CBD - Sweet and soothing.</p>
             <p>Price: €24.99</p>
             <button onclick="openCheckout(4)">Purchase</button>
         </div>
-        <div class="product-card" data-id="5" data-product="Cherry Pie" data-price="€24.99">
+        <div class="product-card" data-id="5" data-product="Cherry Pie" data-price="€24.99" data-description="70% CBD - Rich and fruity aroma." data-image="img/CherryPie.png">
             <img src="img/CherryPie.png" alt="Cherry Pie">
             <h3>Cherry Pie</h3>
             <p>70% CBD - Rich and fruity aroma.</p>
             <p>Price: €24.99</p>
             <button onclick="openCheckout(5)">Purchase</button>
         </div>
-        <div class="product-card" data-id="6" data-product="Candy" data-price="€15.99">
+        <div class="product-card" data-id="6" data-product="Candy" data-price="€15.99" data-description="4% CBD - Sweet and subtle unwind." data-image="img/Candy.png">
             <img src="img/Candy.png" alt="Candy">
             <h3>Candy</h3>
             <p>4% CBD - Sweet and subtle unwind.</p>
             <p>Price: €15.99</p>
             <button onclick="openCheckout(6)">Purchase</button>
         </div>
-        <div class="product-card" data-id="7" data-product="Kush" data-price="€15.99">
+        <div class="product-card" data-id="7" data-product="Kush" data-price="€15.99" data-description="4% CBD - Earthy and calming." data-image="img/Kush.png">
             <img src="img/Kush.png" alt="Kush">
             <h3>Kush</h3>
             <p>4% CBD - Earthy and calming.</p>
             <p>Price: €15.99</p>
             <button onclick="openCheckout(7)">Purchase</button>
         </div>
-        <div class="product-card" data-id="8" data-product="Lemonade" data-price="€15.99">
+        <div class="product-card" data-id="8" data-product="Lemonade" data-price="€15.99" data-description="4% CBD - Refreshing citrus blend." data-image="img/Lemonade.png">
             <img src="img/Lemonade.png" alt="Lemonade">
             <h3>Lemonade</h3>
             <p>4% CBD - Refreshing citrus blend.</p>
             <p>Price: €15.99</p>
             <button onclick="openCheckout(8)">Purchase</button>
         </div>
-        <div class="product-card" data-id="9" data-product="Mint" data-price="€15.99">
+        <div class="product-card" data-id="9" data-product="Mint" data-price="€15.99" data-description="4% CBD - Cool and crisp rejuvenation." data-image="img/Mint.png">
             <img src="img/Mint.png" alt="Mint">
             <h3>Mint</h3>
             <p>4% CBD - Cool and crisp rejuvenation.</p>
@@ -312,35 +419,45 @@
 
     <div class="modal" id="checkout-modal">
         <div class="modal-content">
-            <h2>Checkout</h2>
-            <form id="checkout-form">
-                <input type="hidden" id="selected-product-id" name="product_id">
-                <label for="name">Name and Surname</label>
-                <input type="text" id="name" name="name" required>
+            <button class="close-button" onclick="closeCheckout()">Close</button>
+            <div class="form-section">
+                <h2>Checkout</h2>
+                <form id="checkout-form">
+                    <input type="hidden" id="selected-product-id" name="product_id">
+                    <label for="name">Name and Surname</label>
+                    <input type="text" id="name" name="name" required>
 
-                <label for="age">Age</label>
-                <input type="number" id="age" name="age" required>
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" required>
 
-                <label for="address">Address</label>
-                <input type="text" id="address" name="address" required>
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" required>
 
-                <label for="city">City</label>
-                <input type="text" id="city" name="city" required>
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required>
 
-                <label for="cap">CAP</label>
-                <input type="text" id="cap" name="cap" required>
+                    <label for="cap">CAP</label>
+                    <input type="text" id="cap" name="cap" required>
 
-                <label for="instagram">Instagram Profile</label>
-                <input type="text" id="instagram" name="instagram" required>
+                    <label for="instagram">Instagram Profile</label>
+                    <input type="text" id="instagram" name="instagram" required>
 
-                <label for="verification">Selfie Verification (with DISPOVAPESFANO written on paper)</label>
-                <input type="file" id="verification" name="verification" accept="image/*" required>
+                    <label for="verification">Selfie Verification (with "DISPO2024" written on paper)</label>
+                    <input type="file" id="verification" name="verification" accept="image/*" required>
 
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" name="phone" required>
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" required>
 
-                <button type="submit">Submit Order</button>
-            </form>
+                    <button type="submit">Submit Order</button>
+                </form>
+            </div>
+            <div class="product-details">
+                <h2>Product Details</h2>
+                <img id="product-image" src="" alt="Product Image">
+                <p id="product-name"></p>
+                <p id="product-description"></p>
+                <p id="product-price"></p>
+            </div>
         </div>
     </div>
 
@@ -361,9 +478,18 @@
         const confirmationModal = document.getElementById('confirmation-modal');
         const orderDetails = document.getElementById('order-details');
         const productIdInput = document.getElementById('selected-product-id');
+        const productName = document.getElementById('product-name');
+        const productDescription = document.getElementById('product-description');
+        const productPrice = document.getElementById('product-price');
+        const productImage = document.getElementById('product-image');
 
         function openCheckout(productId) {
+            const productCard = document.querySelector('.product-card[data-id="' + productId + '"]');
             productIdInput.value = productId;
+            productName.textContent = productCard.getAttribute('data-product');
+            productDescription.textContent = productCard.getAttribute('data-description');
+            productPrice.textContent = 'Price: ' + productCard.getAttribute('data-price');
+            productImage.src = productCard.getAttribute('data-image');
             modal.classList.add('active');
         }
 
@@ -376,35 +502,38 @@
         }
 
         document.getElementById('checkout-form').addEventListener('submit', function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    const formData = new FormData(this);
-    const productId = formData.get('product_id');
-    const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
-    const productName = productCard.getAttribute('data-product');
-    const productPrice = productCard.getAttribute('data-price');
-    const orderId = `#${Math.floor(Math.random() * 100000)}`;
+            const formData = new FormData(this);
+            const productId = formData.get('product_id');
+            const productCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+            const productName = productCard.getAttribute('data-product');
+            const productPrice = productCard.getAttribute('data-price');
+            const orderId = '#' + Math.floor(Math.random() * 100000);
 
-    const webhookUrl = 'https://ptb.discord.com/api/webhooks/1319278433381122110/ScLx6wFsF-Q8Qs0rEmIWnstVvMO5qP0XLdCgPtILfWBXbgP1_mIqyzFvdS5goZNubptl';
+            const webhookUrl = 'https://ptb.discord.com/api/webhooks/1319278433381122110/ScLx6wFsF-Q8Qs0rEmIWnstVvMO5qP0XLdCgPtILfWBXbgP1_mIqyzFvdS5goZNubptl';
 
-    // Append additional textual data for the webhook message
-    formData.append('payload_json', JSON.stringify({
-        content: `**New Order:**\n- **Order ID:** ${orderId}\n- **Name:** ${formData.get('name')}\n- **Age:** ${formData.get('age')}\n- **Address:** ${formData.get('address')}\n- **City:** ${formData.get('city')}\n- **CAP:** ${formData.get('cap')}\n- **Instagram:** ${formData.get('instagram')}\n- **Phone:** ${formData.get('phone')}\n- **Product:** ${productName}\n- **Price:** ${productPrice}`
-    }));
+            // Append additional textual data for the webhook message
+            formData.append('payload_json', JSON.stringify({
+                content: `**New Order:**\n- **Order ID:** ${orderId}\n- **Name:** ${formData.get('name')}\n- **Age:** ${formData.get('age')}\n- **Address:** ${formData.get('address')}\n- **City:** ${formData.get('city')}\n- **CAP:** ${formData.get('cap')}\n- **Instagram:** ${formData.get('instagram')}\n- **Phone:** ${formData.get('phone')}\n- **Product:** ${productName}\n- **Price:** ${productPrice}`
+            }));
 
-    fetch(webhookUrl, {
-        method: 'POST',
-        body: formData // Send as multipart form data
-    }).then(() => {
-        closeCheckout();
-        orderDetails.innerHTML = `Order ID: ${orderId}<br>Order is sent! An operator will contact you shortly on Instagram or WhatsApp to confirm the order.`;
-        confirmationModal.classList.add('active');
-    }).catch((err) => {
-        console.error('Error sending order:', err);
-        alert('Failed to submit the order. Please try again.');
-    });
-});
+            fetch(webhookUrl, {
+                method: 'POST',
+                body: formData // Send as multipart form data
+            }).then(() => {
+                closeCheckout();
+                orderDetails.innerHTML = `Order ID: ${orderId}<br>Order is sent! An operator will contact you shortly on Instagram or WhatsApp to confirm the order.`;
+                confirmationModal.classList.add('active');
+            }).catch((err) => {
+                console.error('Error sending order:', err);
+                alert('Failed to submit the order. Please try again.');
+            });
+        });
 
+        // Ensure the product image inside the checkout form is always 357x357
+        productImage.style.width = '357px';
+        productImage.style.height = '357px';
     </script>
 </body>
 </html>
